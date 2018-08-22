@@ -1,4 +1,4 @@
-# Advice for Applying Machine Learning
+##Advice for Applying Machine Learning
 > - How to tell when a learning algorithm is doing poorly
 > - Describe the 'best practices' for how to 'debug' your learning algorithm and  go about improving its performance
 > - Discuss how to understand the performance of a machine learning system with multiple  pars
@@ -113,8 +113,96 @@ Knowing  bias and variance will give you a very strong indicator for what the us
 ![high-bias-lc](images/high-bias-lc.png)
 
 * **Experiencing high variance:**
-  * Low training set size : ${J_{train}}(\Theta )​$ to be low and ${J_{CV}}(\Theta )​$ to be high.
+  * Low training set size : ${J_{train}}(\Theta )$ to be low and ${J_{CV}}(\Theta )$ to be high.
   * Large training set size :  ${J_{train}}(\Theta )$ increases with training set size and  ${J_{CV}}(\Theta )$ continues to decrease without leveling off. Also, ${J_{train}}(\Theta )$ < ${J_{CV}}(\Theta )$ but the difference between them remains significant.
   * If a learning algorithm is suffering from **high variance**, getting more training data is likely to help. 
 
 ![high-variance-lc](images/high-variance-lc.png)
+
+##  Decide what to do next revisited
+
+* Our decision process can be broken down as follows:
+  * Getting more training examples : Fixes high variance
+  * Trying smaller sets of features : Fixes high variance
+  * Adding feature : Fixes high bias
+  * Adding polynomial features : Fixes high bias
+  * Decreasing $\lambda$ : Fixes high bias
+  * Increasing $\lambda$ : Fixes high variance
+
+* Diagnosing Neural Networks
+  * A neural network with fewer parameters is **prone to underfitting**. It is also **computationally cheaper**.
+  * A large neural network with more parameters is **prone to overfitting**. It is also **computationally expensive**. In this case you can use regularization (increase λ) to address the overfitting.
+  * Using a single hidden layer is a good starting default. You can train your neural network on a number of hidden layers using your cross validation set. You can then select the one that performs best.
+
+* Model complexity effects
+
+  * Lower-order polynomials (low model complexity) have high bias and low variance. In this case, the model fits poorly consistently.
+
+  * Higher-order polynomials (high model complexity) fit the training data extremely well and the test data extremely poorly. These have low bias on the training data, but very high variance.
+
+  * In reality, we would want to choose a model somewhere in between, that can generalize well but also fits the data reasonably well.
+
+### Prioritizing what to work on
+
+**Building a spam classifier**
+
+* Given a data set of emails, we could construct a vector for each email. Each entry in this vector represents a word. The vector normally contains 10,000 to 50,000 entries gathered by finding the most frequently used words in our data set. If a word is to be found in the email, we would assign its respective entry a 1, else if it is not found, that entry would be a 0. Once we have all our x vectors ready, we train our algorithm and finally, we could use it to classify if an email is a spam or not.
+
+* How to spend time to make it have low error:
+
+  * Collect lots of data - E.g.  "honeypot" project
+
+  * Develop sophisticated feature based on email routing information(from email header)
+
+  * Develop sophisticated feature for message body, e.g. should "discount" and "discounts" be treated as the same word? Features about punctuation?
+
+  * Develop sophisticated algorithm to detect misspellings (e.d. m0rtgage, med1cine, w4tches.)
+
+    `It is difficult to tell which of the options will be most helpful.`
+
+### Error Analysis
+
+* Recommend approach
+
+  * Start with a simple algorithm that you can implement quickly. Implement it and test if on your cross-validation data
+
+  * Plot learning curves to decide if more data, more features, etc.  are likely to help. Use that evident instead of gut feeling.
+
+  * Manually examine the errors on examples in the cross validation set and try to spot a trend where most of the errors were made.
+
+* For example, assume that we have 500 emails and our algorithm misclassifies a 100 of them. We could manually analyze the 100 emails and categorize them based on what type of emails they are. We could then try to come up with new cues and features that would help us classify these 100 emails correctly. Hence, if most of our misclassified emails are those which try to steal passwords, then we could find some features that are particular to those emails and add them to our model. We could also see how classifying each word according to its root changes our error rate。
+
+* t is very important to get error results as a single, numerical value. Otherwise it is difficult to assess your algorithm's performance. For example if we use stemming, which is the process of treating the same word with different forms (fail/failing/failed) as one word (fail), and get a 3% error rate instead of 5%, then we should definitely add it to our model. However, if we try to distinguish between upper case and lower case letters and end up getting a 3.2% error rate instead of 3%, then we should avoid using this new feature. Hence, we should try new things, get a numerical value for our error rate, and based on our result decide whether we want to keep the new feature or not.
+
+## Handling skewed data
+
+**skewed classes**
+
+When we're faced with such a skewed classes therefore we would want to come up with a different error metric / evaluation metric.
+
+### Precision/Recall
+
+y = 1 in presence of rare class that we want to detect
+
+![R-A-table](/Users/apple/Documents/GitHub/MachineLearning-Cousera/Week 6/images/R-A-table.png)
+
+**Precision** : Of all patients where we predicted y = 1, what fraction actually has cancer
+
+` true POS/(#predicted POS) = true POS/(true POS + false POS)  `  
+
+> Higer Precision is better
+
+**Recall** : Of all patients that actually have cancer, what fraction did we correctly detect as having cancer
+
+`true POS/(#actual POS) = true POS / (true POS + false NEG)`
+
+> Higer Recall is better
+
+* `Precision` and` Recall` are defined setting y equasl to 1, to be the presence of the **rare class** that we're trying to detect. 
+
+* For the problem of skewed classes `Precision` and`Recall` gives us a much better way to evaluate learning algorithm.
+
+### Trading off Precision and Recall
+
+### Data For Machine Learning
+
